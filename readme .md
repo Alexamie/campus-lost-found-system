@@ -16,6 +16,8 @@
 <h3 align="left">Problems/Challenges Encountered: Needed to ensure the form worked without a backend (stored in localStorage instead). Made sure the success state is clear to the user while keeping the UI clean.</h3>
 
 
+
+
 <h1 align="left">Figure 1</h1>
 
-![image alt]()
+![image alt](https://github.com/Alexamie/campus-lost-found-system/blob/af58f7312140a2d6373f5dd88c3a3fda34bd1ad4/Screenshot%202026-03-17%20000851.png)
