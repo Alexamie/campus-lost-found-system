@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function injectSidebar() {
     if (document.getElementById("appSidebar")) return;
 
+    // Skip sidebar on login and register pages
+    if (window.location.pathname.includes("login.html") || window.location.pathname.includes("register.html")) return;
+
     // Get logged-in user info
     const loggedInEmail = localStorage.getItem("loggedInEmail");
     const users = getUsersFromLocalStorage();

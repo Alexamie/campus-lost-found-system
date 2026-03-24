@@ -198,6 +198,88 @@ This is a web-based campus lost and found system built with NestJS backend and H
 - **Styling:** Custom CSS with responsive design.
 - **Icons:** Inline SVG for edit/delete buttons.
 
+## Testing Assignment
+
+STEP 0 — Identify your app and features
+- App name: Campus Lost and Found System
+- Features:
+  1. Report Lost Item (backend wired)
+  2. View Lost Items List (frontend + backend)
+  3. Claim Item (backend wired)
+
+PART 1 — Testing 101
+1. A software test is a way to check if a part of the Campus Lost and Found System works correctly by running it and seeing if it does what it's supposed to do.
+2. Teams write tests to make sure the Campus Lost and Found System doesn't break when they add new stuff, and to find problems early so users don't get frustrated with bugs.
+3. Define:
+   - Unit Test: This tests a small part of the code in the Campus Lost and Found System, like one function in the items service, all by itself.
+   - Integration/API Test: This checks how different parts of the Campus Lost and Found System connect, such as testing the API for reporting items to see if the controller talks to the service right.
+   - E2E Test: This tests the whole user experience in the Campus Lost and Found System, like going from logging in to claiming an item, to make sure everything flows smoothly.
+
+PART 2 — Apply testing (Pick ONLY 2 features)
+Use:
+- Report Lost Item
+- Claim Item
+
+For Report Lost Item:
+
+A) Expected Behavior (3 “must be true” statements)
+- The system must save the reported item details to the database when a user submits the form.
+- The API must check that all required fields are filled before accepting the report.
+- The reported item must show up in the lost items list right after it's submitted.
+
+B) 3 Test Cases:
+- Test Name: Check Item Data Saving
+  Type: Unit
+  Steps/Input: Run the items service with sample item info like name and location.
+  Expected Result: The service saves the data without errors.
+- Test Name: API Report Endpoint Check
+  Type: Integration
+  Steps/Input: Send a request to the report API with full item details.
+  Expected Result: The API saves the item and sends back a success message.
+- Test Name: Full User Report Flow
+  Type: E2E
+  Steps/Input: User fills out the report form on the website and submits it.
+  Expected Result: The item appears in the lost items list.
+
+For Claim Item:
+
+A) Expected Behavior (3 “must be true” statements)
+- The system must require the user to be logged in before they can claim an item.
+- The claim must link the user's info to the specific item in the database.
+- Once claimed, the item must not be available for other users to claim again.
+
+B) 3 Test Cases:
+- Test Name: Validate Claim Logic
+  Type: Unit
+  Steps/Input: Test the claims service with a user's ID and an item ID.
+  Expected Result: The service confirms the claim is valid.
+- Test Name: Claim API Connection
+  Type: Integration
+  Steps/Input: Make a request to the claim API with user login and item choice.
+  Expected Result: The API creates the claim and updates the item status.
+- Test Name: Complete Claim Journey
+  Type: E2E
+  Steps/Input: User logs in, picks an item from the list, and submits a claim.
+  Expected Result: The item is marked as claimed in the user's account.
+
+PART 3 — Tools (MAKE IT A TABLE)
+
+| Tool | What it is (1 sentence) | What you would test in my app |
+|------|-------------------------|-------------------------------|
+| Jest | Jest is a tool for writing and running tests in JavaScript projects like my NestJS backend. | I would use it to test small parts of the Campus Lost and Found System, such as checking if the items service handles item data correctly. |
+| Supertest | Supertest is a library that helps test API endpoints in Node.js apps like NestJS. | I would use it to test the APIs in the Campus Lost and Found System, like making sure the report item endpoint works when I send data to it. |
+| Playwright | Playwright is a tool for testing websites by automating browser actions. | I would use it to test the full user experience in the Campus Lost and Found System, like filling out forms and checking if pages load right. |
+
+PART 4 — AI + Testing
+1. Two ways AI helps: AI can suggest test ideas for the Campus Lost and Found System by looking at the code, which helps me think of cases I might miss. AI can also spot weird situations in the app, like what if someone tries to claim an item twice, to make tests better.
+2. Two risks of AI-generated tests: AI might not understand the special rules of the Campus Lost and Found System, like how claims work, so the tests could be wrong. AI tests might look good but not cover real problems users face, like slow loading on the lost items page.
+3. Complete: "I will not use AI-generated tests unless I check them myself and make sure they fit the Campus Lost and Found System."
+
+PART 5 — Minimal Test Plan
+1. Which ONE feature to test first: Report Lost Item
+2. First test to write: A unit test for the items service to see if it saves item info properly.
+3. Command to run test (Node/NestJS): npm test
+
 ## Future Enhancements
 - Backend integration with database.
 - Email notifications for claims.
