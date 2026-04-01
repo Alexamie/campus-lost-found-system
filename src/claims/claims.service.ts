@@ -4,9 +4,10 @@ import { Injectable } from '@nestjs/common';
 export class ClaimsService {
 
   claims: any[] = [];
+  private idCounter = 0;
 
   create(data: any) {
-    const claim = { id: Date.now(), status: 'pending', ...data };
+    const claim = { id: ++this.idCounter, status: 'pending', ...data };
     this.claims.push(claim);
     return claim;
   }
