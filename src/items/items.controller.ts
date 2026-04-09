@@ -6,7 +6,7 @@ export class ItemsController {
 
   constructor(private readonly itemsService: ItemsService) {}
 
-  @Post()
+  @Post('report')
   create(@Body() body) {
     return this.itemsService.create(body);
   }
