@@ -6,9 +6,8 @@ import { AppModule } from './../src/app.module';
 
 describe('Campus Lost and Found API (e2e)', () => {
   let app: INestApplication<App>;
-  let token: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -17,13 +16,19 @@ describe('Campus Lost and Found API (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('should authenticate user and get JWT token', async () => {
+    const email = `test-${Date.now()}@example.com`;
+
     // First, register a user
     await request(app.getHttpServer())
       .post('/auth/register')
       .send({
         name: 'Test User',
-        email: 'test@example.com',
+        email,
         password: 'password123',
         confirmPassword: 'password123',
       })
@@ -33,13 +38,13 @@ describe('Campus Lost and Found API (e2e)', () => {
     const loginResponse = await request(app.getHttpServer())
       .post('/auth/login')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
       })
       .expect(201);
 
     expect(loginResponse.body).toHaveProperty('token');
-    token = loginResponse.body.token;
+    expect(loginResponse.body.token).toBeTruthy();
   });
 
   it('should get all items (GET /items)', () => {
@@ -52,16 +57,36 @@ describe('Campus Lost and Found API (e2e)', () => {
   });
 
   it('should create a claim (POST /claims) with authentication', async () => {
-    // Assuming we have an item to claim, or create one first
+    const email = `claim-${Date.now()}@example.com`;
+
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        name: 'Claim User',
+        email,
+        password: 'password123',
+      })
+      .expect(201);
+
+    const loginResponse = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password: 'password123',
+      })
+      .expect(201);
+
+    const token = loginResponse.body.token;
+
     const itemResponse = await request(app.getHttpServer())
-      .post('/items')
+      .post('/items/report')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Lost Wallet',
         description: 'Black wallet with cards',
-        category: 'lost',
-        date: '2023-10-01',
+        status: 'lost',
         location: 'Library',
-        contact: 'test@example.com',
+        contact: email,
       })
       .expect(201);
 

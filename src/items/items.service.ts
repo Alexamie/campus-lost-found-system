@@ -1,34 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Item } from '../entities/item.entity';
 
 @Injectable()
 export class ItemsService {
+  constructor(
+    @InjectRepository(Item)
+    private readonly itemsRepository: Repository<Item>,
+  ) {}
 
-  items: any[] = [];
+  async create(
+    data: {
+      title?: string;
+      name?: string;
+      description: string;
+      location: string;
+      image?: string;
+      status: 'lost' | 'found';
+      contact: string;
+    },
+    user: { id: number; role: 'admin' | 'user' },
+  ) {
+    const item = this.itemsRepository.create({
+      title: data.title || data.name || 'Untitled item',
+      description: data.description,
+      location: data.location,
+      image: data.image,
+      status: data.status,
+      contact: data.contact,
+      reportedByUserId: user.id,
+      approvalStatus: user.role === 'admin' ? 'approved' : 'pending',
+    });
 
-  create(data: any) {
-    const item = { id: Date.now(), ...data };
-    this.items.push(item);
-    return item;
+    return this.itemsRepository.save(item);
   }
 
-  findAll() {
-    return this.items;
+  async findAll() {
+    return this.itemsRepository.find({
+      where: { approvalStatus: 'approved' },
+      order: { id: 'DESC' },
+    });
   }
 
-  findOne(id: number) {
-    return this.items.find(item => item.id == id);
+  async findAllForAdmin() {
+    return this.itemsRepository.find({
+      order: { id: 'DESC' },
+    });
   }
 
-  update(id: number, data: any) {
-    const item = this.findOne(id);
-    if (item) {
-      Object.assign(item, data);
+  async findOne(id: number) {
+    const item = await this.itemsRepository.findOne({
+      where: { id, approvalStatus: 'approved' },
+    });
+
+    if (!item) {
+      throw new NotFoundException('Item not found');
     }
+
     return item;
   }
 
-  remove(id: number) {
-    this.items = this.items.filter(item => item.id != id);
+  async approve(id: number) {
+    const item = await this.itemsRepository.findOne({ where: { id } });
+    if (!item) {
+      throw new NotFoundException('Item not found');
+    }
+
+    item.approvalStatus = 'approved';
+    return this.itemsRepository.save(item);
+  }
+
+  async remove(id: number) {
+    await this.itemsRepository.delete(id);
     return { deleted: true };
   }
 }
