@@ -21,14 +21,11 @@ Comprehensive test cases for the Campus Lost and Found Web System. Each test cas
 | TC010 | Claim Found Item | 1. Log in as user<br>2. Click "Claim Item" card on dashboard<br>3. Select an item from dropdown: "Blue Keys"<br>4. Enter claimer name: "Jane Smith"<br>5. Enter contact: "jane@example.com"<br>6. Click Submit Claim | Claim is created and stored. Success message displayed: "Claim submitted successfully."<br>Item is removed from Found Items list. Claim status set to "pending." Item no longer available for other users. |
 | TC011 | Edit Lost Item | 1. Log in as item reporter<br>2. Navigate to Lost Items page<br>3. Find reported item: "Black Wallet"<br>4. Click Edit button<br>5. Change location from "Library Building" to "Student Center"<br>6. Click Update | Item is updated successfully. List refreshes immediately. Updated item shows new location. Other details remain unchanged. |
 | TC012 | Delete Lost Item | 1. Log in as item reporter<br>2. Navigate to Lost Items page<br>3. Find reported item: "Black Wallet"<br>4. Click Delete button<br>5. Confirm deletion in popup | Item is removed from the system. Item no longer appears in Lost Items list. Confirmation message displayed. |
-| TC013 | Approve Claim (Admin) | 1. Log in as admin<br>2. Navigate to Dashboard<br>3. Click "Show Claims" toggle button<br>4. Find claim: User "Jane Smith" claiming "Blue Keys"<br>5. Click Approve button | Claim status changes from "pending" to "approved." Claim appears with "Approved" badge in claims list. User can see approval status. |
-| TC014 | Reject Claim (Admin) | 1. Log in as admin<br>2. Navigate to Dashboard<br>3. Click "Show Claims" toggle button<br>4. Find claim to reject<br>5. Click Reject button | Claim status changes from "pending" to "rejected." Claimed item becomes available for other users to claim. Rejection notification visible. |
 | TC015 | View Help/Contact Page | 1. Log in to system<br>2. Click "Help" card on dashboard<br>3. Wait for page to load | Help page loads successfully. Campus support contact information is displayed (phone, email, office location). Contact form is visible with fields: name, email, message. |
 | TC016 | Submit Help Request | 1. Navigate to Help page<br>2. Enter name: "Bob Johnson"<br>3. Enter email: "bob@example.com"<br>4. Enter message: "Lost my ID card, how to proceed?"<br>5. Click Submit | Message is saved to system (localStorage.contacts). Success alert appears: "Message sent successfully." Form is cleared and reset. Alert auto-hides after 3 seconds. |
 | TC017 | View Resources Page | 1. Log in to system<br>2. Click "Resources" card on dashboard<br>3. Wait for page to load | Resources page loads successfully. At least 5 resource entries displayed with: title, description, and contact information. Page is mobile responsive. |
 | TC018 | Sidebar Navigation | 1. Navigate to any page in system<br>2. Click sidebar toggle button<br>3. Sidebar expands showing: profile section, navigation links<br>4. Click "Lost Items" link | Sidebar is fully functional. Displays logged-in user's name. All navigation links work (Lost Items, Found Items, Claim Item, Resources, Help, Dashboard). Page correctly navigates to selected section. |
 | TC019 | User Logout | 1. Log in as user<br>2. Click "Logout" button in dashboard or sidebar<br>3. Confirm logout | Session is cleared. User is logged out. localStorage session data is removed. System redirects to login page. |
-| TC020 | Admin Fallback Login | 1. Navigate to login page<br>2. Enter email: "admin@gmail.com"<br>3. Enter password: "1234"<br>4. Click Login | Admin user is authenticated. System redirects to dashboard. Admin can access all features including claim management. |
 
 ---
 
@@ -37,12 +34,13 @@ Comprehensive test cases for the Campus Lost and Found Web System. Each test cas
 | Feature | Test Cases | Status |
 |---------|-----------|--------|
 | User Registration | TC001, TC002, TC003 | ✅ Basic + Error Cases |
-| User Login | TC004, TC005, TC020 | ✅ Valid + Invalid + Admin |
+| User Login | TC004, TC005 | ✅ Valid + Invalid |
 | Report Item | TC006, TC007 | ✅ Lost & Found Items |
 | View Items | TC008, TC009 | ✅ List Display |
 | Claim Item | TC010 | ✅ Claim Submission |
 | Manage Items | TC011, TC012 | ✅ Edit & Delete |
-| Claim Management | TC013, TC014 | ✅ Approve & Reject |
+| Help & Resources | TC015, TC016, TC017 | ✅ Support Pages |
+| Logout | TC019 | ✅ Session End |
 | Help & Support | TC015, TC016 | ✅ Help Page & Contact Form |
 | Resources | TC017 | ✅ Resources Page |
 | Navigation | TC018, TC019 | ✅ Sidebar & Logout |

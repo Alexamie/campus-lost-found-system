@@ -20,6 +20,7 @@
 
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
 
     "noImplicitAny": false,
     "strictBindCallApply": false,

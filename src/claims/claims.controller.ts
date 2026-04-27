@@ -1,29 +1,31 @@
-import { Controller, Post, Get, Body, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ClaimsService } from './claims.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('claims')
 export class ClaimsController {
-
   constructor(private readonly claimsService: ClaimsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() body) {
-    return this.claimsService.create(body);
+  create(@Body() body, @Request() req) {
+    return this.claimsService.create(body, req.user);
   }
 
-  @Get()
-  findAll() {
-    return this.claimsService.findAll();
-  }
-
-  @Put(':id/approve')
-  approve(@Param('id') id:number){
-    return this.claimsService.approve(id);
-  }
-
-  @Put(':id/reject')
-  reject(@Param('id') id:number){
-    return this.claimsService.reject(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('mine')
+  findMine(@Request() req) {
+    return this.claimsService.findByUser(req.user.id);
   }
 
 }

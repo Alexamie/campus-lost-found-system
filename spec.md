@@ -6,14 +6,20 @@ The Campus Lost and Found System is a web-based application built with a NestJS 
 ## Features List
 1. **User Authentication (Login/Registration)**: Secure access with user accounts, including registration, login, and session management.
 2. **Dashboard**: Central navigation hub with links to features and claim management toggle.
-3. **Report Item**: Form to report lost or found items, storing data in localStorage.
-4. **Lost Items Page**: Display and manage list of reported lost items.
-5. **Found Items Page**: Display and manage list of reported found items.
-6. **Claim Item**: Form to claim found items, linking user and item data.
-7. **Sidebar Navigation**: Toggleable navigation across pages.
-8. **Helpful Resources Page**: Access to campus safety info, tips, and services.
-9. **Contact/Help Page**: Support contact form and campus support details.
-10. **Claims Management**: View submitted claims via dashboard toggle.
+3. **User Profile**: Simple profile management with basic personal information (name, email, phone, student ID) and account statistics.
+4. **Report Item**: Form to report lost or found items, storing data in localStorage.
+5. **Lost Items Page**: Display and manage list of reported lost items.
+6. **Found Items Page**: Display and manage list of reported found items.
+7. **Claim Item**: Form to claim found items, linking user and item data.
+8. **Sidebar Navigation**: Toggleable navigation across pages.
+9. **Helpful Resources Page**: Access to campus safety info, tips, and services.
+10. **Contact/Help Page**: Support contact form and campus support details.
+11. **Claims Management**: View submitted claims via dashboard toggle.
+
+## Recent Updates
+- Fixed the account creation flow so `register.html` opens correctly and does not redirect immediately to the dashboard.
+- Updated login redirection so admin users are routed to `admin.html` when authenticated with the admin role.
+- Removed the “Recent Activity” and “Campus Tips” sections from the user dashboard layout.
 
 ## Testing Types Explanation
 
@@ -57,7 +63,7 @@ E2E tests simulate real user scenarios from start to finish, testing the entire 
 
 ### Login
 **Expected Behaviors**:
-- The system must validate user credentials against stored data or admin fallback.
+- The system must validate user credentials against stored data.
 - Successful login must set session and redirect to dashboard.
 - Invalid login must display an error message.
 
@@ -98,6 +104,20 @@ E2E tests simulate real user scenarios from start to finish, testing the entire 
 - **Unit**: Test DashboardService for authentication checks.
 - **Integration**: Test GET /dashboard with/without auth.
 - **E2E**: User logs in, navigates via cards, toggles claims.
+
+### User Profile
+**Expected Behaviors**:
+- Profile page must be protected and require authentication.
+- User can update personal information (name, email, phone, student ID).
+- Campus preferences can be saved and retrieved.
+- Account statistics must display correctly (total reports, approved reports, resolved items, account age).
+- Data export functionality must generate downloadable JSON file.
+- Account deletion must require confirmation and clear all user data.
+
+**Test Cases**:
+- **Unit**: Test profile data validation and localStorage operations.
+- **Integration**: Test profile update endpoints with authentication.
+- **E2E**: User navigates to profile, updates information, saves preferences, exports data, and verifies changes persist.
 
 ## Problems Encountered
 - **Frontend-Only Storage**: Using localStorage limits scalability; tests must mock browser storage.

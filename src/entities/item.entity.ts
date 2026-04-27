@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Item {
@@ -20,16 +26,18 @@ export class Item {
   @Column({ nullable: true })
   image: string;
 
-  @Column({ type: 'simple-enum', enum: ['lost', 'found'] })
-  status: 'lost' | 'found';
+  @Column({ default: 'lost' })
+  status: string;
 
-  @Column({
-    type: 'simple-enum',
-    enum: ['pending', 'approved'],
-    default: 'pending',
-  })
-  approvalStatus: 'pending' | 'approved';
+  @Column({ default: 'pending' })
+  approvalStatus: string;
 
   @Column({ nullable: true })
   reportedByUserId: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

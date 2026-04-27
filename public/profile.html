@@ -2,46 +2,624 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>User Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - Campus Lost & Found</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="styles.css">
+<style>
+/* Custom styles for profile page */
+.profile-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff8f5 0%, #ffe2d8 100%);
+}
+
+.profile-sidebar {
+  width: 300px;
+  background: rgba(255, 255, 255, 0.95);
+  border-right: 1px solid rgba(255, 111, 97, 0.1);
+  padding: 24px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.profile-sidebar-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 111, 97, 0.1);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9a7f, #ff6f61);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+}
+
+.profile-user-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2f2830;
+  margin-bottom: 4px;
+}
+
+.profile-user-email {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.profile-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-nav-item {
+  margin-bottom: 8px;
+}
+
+.profile-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.profile-nav-link:hover, .profile-nav-link.active {
+  background: linear-gradient(135deg, #ff9a7f, #ff6f61);
+  color: white;
+}
+
+.profile-nav-link i {
+  margin-right: 12px;
+  width: 20px;
+}
+
+.profile-main {
+  flex: 1;
+  margin-left: 300px;
+  padding: 24px;
+}
+
+.profile-header {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.profile-form-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.profile-stats-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2f2830;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.form-section-title i {
+  margin-right: 12px;
+  color: #ff6f61;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2f2830;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff9a7f, #ff6f61);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+}
+
+.btn-outline-secondary {
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: #666;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background: #f8f9fa;
+  border-color: #ccc;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #ff6f61;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9a7f, #ff6f61);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.stat-content h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2f2830;
+}
+
+.stat-content p {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.alert-success {
+  background: #d1edff;
+  color: #0d6efd;
+  border: 1px solid #b3d7ff;
+}
+
+.alert-error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+  .profile-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+  }
+
+  .profile-main {
+    margin-left: 0;
+  }
+
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
 </head>
+
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">🎒 Campus Lost & Found</a>
-  </div>
-</nav>
-
-<div class="container page-container my-5">
-
-  <h2 class="mb-4">User Profile</h2>
-
-  <form class="shadow p-4 rounded bg-light" id="profileForm">
-
-    <div class="mb-3">
-      <label for="profileName" class="form-label">Full Name</label>
-      <input type="text" class="form-control" id="profileName" required>
+<div class="profile-container">
+  <!-- Sidebar -->
+  <aside class="profile-sidebar">
+    <div class="profile-sidebar-header">
+      <div class="profile-avatar">
+        <i class="bi bi-person"></i>
+      </div>
+      <div class="profile-user-name" id="sidebarUserName">Loading...</div>
+      <div class="profile-user-email" id="sidebarUserEmail">Loading...</div>
     </div>
 
-    <div class="mb-3">
-      <label for="profileEmail" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="profileEmail" required>
+    <nav>
+      <ul class="profile-nav">
+        <li class="profile-nav-item">
+          <a href="user-dashboard.html" class="profile-nav-link">
+            <i class="bi bi-house-door"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="profile-nav-item">
+          <a href="#profile" class="profile-nav-link active">
+            <i class="bi bi-person-gear"></i>
+            Profile Settings
+          </a>
+        </li>
+        <li class="profile-nav-item">
+          <a href="index.html" class="profile-nav-link">
+            <i class="bi bi-globe"></i>
+            Campus Home
+          </a>
+        </li>
+        <li class="profile-nav-item">
+          <button class="profile-nav-link" onclick="logout()" style="width: 100%; border: none; background: none; text-align: left;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="profile-main">
+    <!-- Header -->
+    <header class="profile-header">
+      <h1 style="margin: 0; color: #2f2830; font-size: 2rem;">Profile Settings</h1>
+      <p style="margin: 8px 0 0; color: #666;">Manage your account information and preferences</p>
+    </header>
+
+    <!-- Status Messages -->
+    <div id="profileMessage" style="display: none;"></div>
+
+    <!-- Main Content Grid -->
+    <div class="profile-content">
+      <!-- Profile Form -->
+      <div class="profile-form-card">
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h3 class="form-section-title">
+            <i class="bi bi-person-circle"></i>
+            Personal Information
+          </h3>
+
+          <form id="profileForm">
+            <div class="form-group">
+              <label class="form-label" for="profileName">Full Name *</label>
+              <input type="text" class="form-control" id="profileName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profileEmail">Email Address *</label>
+              <input type="email" class="form-control" id="profileEmail" placeholder="your.email@campus.edu" required>
+              <small style="color: #666; font-size: 0.8rem;">This email is used for account access and notifications</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profilePhone">Phone Number</label>
+              <input type="tel" class="form-control" id="profilePhone" placeholder="(555) 123-4567">
+              <small style="color: #666; font-size: 0.8rem;">Optional: Used for urgent item recovery notifications</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profileStudentId">Student ID</label>
+              <input type="text" class="form-control" id="profileStudentId" placeholder="12345678">
+              <small style="color: #666; font-size: 0.8rem;">Optional: Helps verify your campus affiliation</small>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+              <button type="submit" class="btn-primary">Save Changes</button>
+              <button type="button" class="btn-outline-secondary" onclick="resetForm()">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Stats & Info Sidebar -->
+      <div class="profile-stats-card">
+        <h3 style="margin-bottom: 20px; color: #2f2830;">Account Overview</h3>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <div class="stat-content">
+              <h4 id="totalReports">0</h4>
+              <p>Total Reports</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h4 id="approvedReports">0</h4>
+              <p>Approved Reports</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-hand-thumbs-up"></i>
+            </div>
+            <div class="stat-content">
+              <h4 id="resolvedItems">0</h4>
+              <p>Items Resolved</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-calendar-event"></i>
+            </div>
+            <div class="stat-content">
+              <h4 id="accountAge">New</h4>
+              <p>Member Since</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campus Resources -->
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e0e0e0;">
+          <h4 style="margin-bottom: 16px; color: #2f2830;">Campus Resources</h4>
+          <ul style="padding-left: 20px; color: #666; font-size: 0.9rem; line-height: 1.6;">
+            <li><a href="#" style="color: #ff6f61; text-decoration: none;">Lost & Found Office</a></li>
+            <li><a href="#" style="color: #ff6f61; text-decoration: none;">Campus Security</a></li>
+            <li><a href="#" style="color: #ff6f61; text-decoration: none;">Student Services</a></li>
+            <li><a href="#" style="color: #ff6f61; text-decoration: none;">Help & Support</a></li>
+          </ul>
+        </div>
+
+        <!-- Account Actions -->
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e0e0e0;">
+          <h4 style="margin-bottom: 16px; color: #2f2830;">Account Actions</h4>
+          <button class="btn-outline-secondary" style="width: 100%; margin-bottom: 8px;" onclick="exportData()">
+            <i class="bi bi-download" style="margin-right: 8px;"></i>
+            Export My Data
+          </button>
+          <button class="btn-outline-secondary" style="width: 100%; color: #dc3545; border-color: #dc3545;" onclick="confirmDeleteAccount()">
+            <i class="bi bi-trash" style="margin-right: 8px;"></i>
+            Delete Account
+          </button>
+        </div>
+      </div>
     </div>
-
-    <div class="mb-3">
-      <label for="profilePhone" class="form-label">Phone Number</label>
-      <input type="tel" class="form-control" id="profilePhone">
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Profile</button>
-
-  </form>
-
+  </main>
 </div>
 
-<script src="script.js"></script>
+<script>
+// Check for session using the same format as script.js
+const session = JSON.parse(localStorage.getItem("session"));
+const user = session?.user;
 
+if (!user) {
+  window.location.href = "login.html";
+}
+</script>
+
+<script src="script.js"></script>
+<script>
+// Profile page functionality
+document.addEventListener('DOMContentLoaded', async function() {
+  await loadUserProfile();
+  bindProfileForms();
+});
+
+async function loadUserProfile() {
+  try {
+    // Load user data from session/API
+    const session = JSON.parse(localStorage.getItem("session"));
+    const user = session?.user;
+
+    if (user) {
+      // Populate form fields
+      document.getElementById('profileName').value = user.name || '';
+      document.getElementById('profileEmail').value = user.email || '';
+      document.getElementById('sidebarUserName').textContent = user.name || 'User';
+      document.getElementById('sidebarUserEmail').textContent = user.email || '';
+
+      // Load additional profile data if available
+      const profileData = JSON.parse(localStorage.getItem('userProfile') || '{}');
+      document.getElementById('profilePhone').value = profileData.phone || '';
+      document.getElementById('profileStudentId').value = profileData.studentId || '';
+    }
+
+    // Load dashboard stats
+    await loadProfileStats();
+
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    showMessage('Error loading profile data', 'error');
+  }
+}
+
+async function loadProfileStats() {
+  try {
+    const dashboard = await apiFetch('/user/dashboard');
+    const reports = dashboard.reports || [];
+    const approvedReports = reports.filter(report => report.approvalStatus === 'approved');
+    const resolvedReports = reports.filter(report => report.status === 'resolved');
+
+    document.getElementById('totalReports').textContent = reports.length;
+    document.getElementById('approvedReports').textContent = approvedReports.length;
+    document.getElementById('resolvedItems').textContent = resolvedReports.length;
+
+    // Calculate account age
+    const session = JSON.parse(localStorage.getItem("session"));
+    if (session?.timestamp) {
+      const accountDate = new Date(session.timestamp);
+      const now = new Date();
+      const diffTime = Math.abs(now - accountDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 1) {
+        document.getElementById('accountAge').textContent = 'Today';
+      } else if (diffDays < 7) {
+        document.getElementById('accountAge').textContent = `${diffDays} days`;
+      } else if (diffDays < 30) {
+        const weeks = Math.floor(diffDays / 7);
+        document.getElementById('accountAge').textContent = `${weeks} week${weeks > 1 ? 's' : ''}`;
+      } else {
+        const months = Math.floor(diffDays / 30);
+        document.getElementById('accountAge').textContent = `${months} month${months > 1 ? 's' : ''}`;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading stats:', error);
+  }
+}
+
+function bindProfileForms() {
+  // Profile form
+  const profileForm = document.getElementById('profileForm');
+  if (profileForm) {
+    profileForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await saveProfile();
+    });
+  }
+}
+
+async function saveProfile() {
+  try {
+    const profileData = {
+      name: document.getElementById('profileName').value.trim(),
+      email: document.getElementById('profileEmail').value.trim(),
+      phone: document.getElementById('profilePhone').value.trim(),
+      studentId: document.getElementById('profileStudentId').value.trim()
+    };
+
+    // Validate required fields
+    if (!profileData.name || !profileData.email) {
+      showMessage('Name and email are required', 'error');
+      return;
+    }
+
+    // Save to localStorage (in a real app, this would be an API call)
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
+
+    // Update sidebar display
+    document.getElementById('sidebarUserName').textContent = profileData.name;
+    document.getElementById('sidebarUserEmail').textContent = profileData.email;
+
+    showMessage('Profile updated successfully!', 'success');
+
+  } catch (error) {
+    console.error('Error saving profile:', error);
+    showMessage('Error saving profile', 'error');
+  }
+}
+
+function resetForm() {
+  if (confirm('Are you sure you want to reset the form? Unsaved changes will be lost.')) {
+    document.getElementById('profileForm').reset();
+  }
+}
+
+function showMessage(message, type) {
+  const messageDiv = document.getElementById('profileMessage');
+  messageDiv.innerHTML = `<div class="alert alert-${type === 'success' ? 'success' : 'error'}">${message}</div>`;
+  messageDiv.style.display = 'block';
+
+  setTimeout(() => {
+    messageDiv.style.display = 'none';
+  }, 5000);
+}
+
+function exportData() {
+  try {
+    const session = JSON.parse(localStorage.getItem("session"));
+    const profile = JSON.parse(localStorage.getItem("userProfile") || '{}');
+
+    const exportData = {
+      user: session?.user,
+      profile: profile,
+      exportDate: new Date().toISOString()
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = 'campus-lost-found-profile-data.json';
+    link.click();
+
+    showMessage('Data exported successfully!', 'success');
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    showMessage('Error exporting data', 'error');
+  }
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.')) {
+    if (confirm('This is your final warning. Are you absolutely sure you want to delete your account?')) {
+      // In a real app, this would make an API call to delete the account
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+  }
+}
+</script>
 </body>
 </html>

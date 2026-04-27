@@ -2,39 +2,55 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User, UserRole } from '../entities/user.entity';
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async onModuleInit() {
-    await this.ensureDefaultAdmin();
-  }
-
   async register(data: {
     name: string;
     email: string;
     password: string;
-    role?: 'admin' | 'user';
-  }): Promise<Omit<User, 'password'>> {
-    return this.createUser(data, 'user');
+    role?: UserRole;
+  }): Promise<{
+    access_token: string;
+    user: { id: number; email: string; role: UserRole };
+  }> {
+    const user = await this.createUser(data, data.role || UserRole.USER);
+    const normalizedRole = String(user.role || UserRole.USER).toLowerCase() as UserRole;
+
+    const payload = {
+      id: user.id,
+      sub: user.id,
+      email: user.email,
+      role: normalizedRole,
+    };
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      access_token: accessToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: normalizedRole,
+      },
+    };
   }
 
   async createUser(
-    data: { name: string; email: string; password: string; role?: 'admin' | 'user' },
-    role: 'admin' | 'user' = 'user',
+    data: { name: string; email: string; password: string; role?: UserRole },
+    role: UserRole = UserRole.USER,
   ): Promise<Omit<User, 'password'>> {
     const email = data.email.toLowerCase().trim();
     const existingUser = await this.usersRepository.findOne({ where: { email } });
@@ -60,8 +76,7 @@ export class AuthService implements OnModuleInit {
     password: string;
   }): Promise<{
     access_token: string;
-    token: string;
-    user: Omit<User, 'password'>;
+    user: { id: number; email: string; role: UserRole };
   }> {
     const email = data.email.toLowerCase().trim();
     const user = await this.usersRepository.findOne({ where: { email } });
@@ -70,13 +85,22 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const normalizedRole = String(user.role || UserRole.USER).toLowerCase() as UserRole;
+    const payload = {
+      id: user.id,
+      sub: user.id,
+      email: user.email,
+      role: normalizedRole,
+    };
     const accessToken = this.jwtService.sign(payload);
 
     return {
       access_token: accessToken,
-      token: accessToken,
-      user: this.sanitizeUser(user),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: normalizedRole,
+      },
     };
   }
 
@@ -104,24 +128,4 @@ export class AuthService implements OnModuleInit {
     return sanitizedUser;
   }
 
-  private async ensureDefaultAdmin() {
-    const adminEmail = 'admin@example.com';
-    const existingAdmin = await this.usersRepository.findOne({
-      where: { email: adminEmail },
-    });
-
-    if (existingAdmin) {
-      return;
-    }
-
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    const adminUser = this.usersRepository.create({
-      name: 'Admin User',
-      email: adminEmail,
-      password: hashedPassword,
-      role: 'admin',
-    });
-
-    await this.usersRepository.save(adminUser);
-  }
 }

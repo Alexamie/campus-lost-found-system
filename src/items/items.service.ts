@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Item } from '../entities/item.entity';
+
+type ItemStatus = 'lost' | 'found';
+type UserRole = 'user';
 
 @Injectable()
 export class ItemsService {
@@ -17,10 +24,10 @@ export class ItemsService {
       description: string;
       location: string;
       image?: string;
-      status: 'lost' | 'found';
+      status: ItemStatus;
       contact: string;
     },
-    user: { id: number; role: 'admin' | 'user' },
+    user: { id: number; role: UserRole },
   ) {
     const item = this.itemsRepository.create({
       title: data.title || data.name || 'Untitled item',
@@ -30,7 +37,7 @@ export class ItemsService {
       status: data.status,
       contact: data.contact,
       reportedByUserId: user.id,
-      approvalStatus: user.role === 'admin' ? 'approved' : 'pending',
+      approvalStatus: 'approved',
     });
 
     return this.itemsRepository.save(item);
@@ -43,8 +50,9 @@ export class ItemsService {
     });
   }
 
-  async findAllForAdmin() {
+  async findByReporter(userId: number) {
     return this.itemsRepository.find({
+      where: { reportedByUserId: userId },
       order: { id: 'DESC' },
     });
   }
@@ -61,6 +69,24 @@ export class ItemsService {
     return item;
   }
 
+  async findOneForActor(id: number, actor: { id: number; role: UserRole }) {
+    const item = await this.itemsRepository.findOne({ where: { id } });
+
+    if (!item) {
+      throw new NotFoundException('Item not found');
+    }
+
+    const canAccess =
+      item.approvalStatus === 'approved' ||
+      item.reportedByUserId === actor.id;
+
+    if (!canAccess) {
+      throw new UnauthorizedException('You do not have access to this item');
+    }
+
+    return item;
+  }
+
   async approve(id: number) {
     const item = await this.itemsRepository.findOne({ where: { id } });
     if (!item) {
@@ -71,8 +97,45 @@ export class ItemsService {
     return this.itemsRepository.save(item);
   }
 
+  async update(
+    id: number,
+    data: Partial<{
+      title: string;
+      description: string;
+      location: string;
+      image?: string;
+      status: ItemStatus;
+      contact: string;
+      approvalStatus: 'pending' | 'approved';
+    }>,
+  ) {
+    const item = await this.itemsRepository.findOne({ where: { id } });
+
+    if (!item) {
+      throw new NotFoundException('Item not found');
+    }
+
+    Object.assign(item, {
+      ...(data.title !== undefined ? { title: data.title } : {}),
+      ...(data.description !== undefined ? { description: data.description } : {}),
+      ...(data.location !== undefined ? { location: data.location } : {}),
+      ...(data.image !== undefined ? { image: data.image } : {}),
+      ...(data.status !== undefined ? { status: data.status } : {}),
+      ...(data.contact !== undefined ? { contact: data.contact } : {}),
+      ...(data.approvalStatus !== undefined
+        ? { approvalStatus: data.approvalStatus }
+        : {}),
+    });
+
+    return this.itemsRepository.save(item);
+  }
+
   async remove(id: number) {
-    await this.itemsRepository.delete(id);
+    const result = await this.itemsRepository.delete(id);
+    if (!result.affected) {
+      throw new NotFoundException('Item not found');
+    }
+
     return { deleted: true };
   }
 }

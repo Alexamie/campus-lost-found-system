@@ -5,24 +5,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { AdminController } from './admin.controller';
 import { UserController } from './user.controller';
 import { User } from '../entities/user.entity';
-import { Item } from '../entities/item.entity';
-import { ItemsService } from '../items/items.service';
 import { RolesGuard } from './roles.guard';
+import { ItemsModule } from '../items/items.module';
+import { ClaimsModule } from '../claims/claims.module';
 
 @Module({
   imports: [
     PassportModule,
-    TypeOrmModule.forFeature([User, Item]),
+    TypeOrmModule.forFeature([User]),
+    ItemsModule,
+    ClaimsModule,
     JwtModule.register({
       secret: 'your-secret-key', // Use env
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  controllers: [AuthController, AdminController, UserController],
-  providers: [AuthService, JwtStrategy, ItemsService, RolesGuard],
+  controllers: [AuthController, UserController],
+  providers: [AuthService, JwtStrategy, RolesGuard],
   exports: [AuthService],
 })
 export class AuthModule {}

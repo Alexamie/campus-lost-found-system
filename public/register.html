@@ -9,54 +9,58 @@
 
 </head>
 
-<body>
+<body class="auth-page">
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<main class="auth-shell">
 
-<div class="card shadow p-4 auth-card" style="width:400px">
+<section class="auth-card">
 
-<h4 class="text-center brand-title mb-2">🎒 Campus Lost & Found</h4>
+<div class="auth-header">
+<p class="auth-eyebrow">Campus Lost &amp; Found</p>
+<h1 class="brand-title">Create account</h1>
+<p class="auth-subtitle">Join the community and make it easier to return lost items to the right people.</p>
+</div>
 
-<h3 class="text-center mb-4">Create Account</h3>
-
-<form id="registerForm">
+<form id="registerForm" class="auth-form">
 
 <div class="mb-3">
-<label class="form-label">Full Name</label>
-<input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+<label for="fullName" class="form-label">Full Name</label>
+<input type="text" id="fullName" class="form-control auth-input" placeholder="Enter your full name" required>
 </div>
 
 <div class="mb-3">
-<label class="form-label">Email</label>
-<input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required>
+<label for="registerEmail" class="form-label">Email</label>
+<input type="email" id="registerEmail" class="form-control auth-input" placeholder="Enter your email" required>
 </div>
 
 <div class="mb-3">
-<label class="form-label">Password</label>
-<input type="password" id="registerPassword" class="form-control" placeholder="Create a password" required>
+<label for="registerPassword" class="form-label">Password</label>
+<input type="password" id="registerPassword" class="form-control auth-input" placeholder="Create a password" required>
 </div>
 
 <div class="mb-3">
-<label class="form-label">Confirm Password</label>
-<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm password" required>
+<label for="confirmPassword" class="form-label">Confirm Password</label>
+<input type="password" id="confirmPassword" class="form-control auth-input" placeholder="Confirm password" required>
 </div>
 
-<button type="submit" class="btn btn-coral w-100">Register</button>
+<button type="submit" class="btn btn-coral w-100 auth-button">Register</button>
 
-<p class="text-center mt-3">
+<p id="registerMsg" style="margin-top:10px;color:red;text-align:center;"></p>
+
+<p class="auth-switch text-center">
 Already have an account?
 <a href="login.html" class="link-style">Login</a>
 </p>
 
-<p class="text-center">
+<p class="auth-switch text-center mb-0">
 <a href="index.html" class="link-style">Back to Home</a>
 </p>
 
 </form>
 
-</div>
+</section>
 
-</div>
+</main>
 
 <script src="script.js"></script>
 </body>
