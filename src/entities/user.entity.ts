@@ -1,9 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-export enum UserRole {
-  USER = 'user',
-  ADMIN = 'admin',
-}
+import { Role } from '../users/roles.enum';
 
 @Entity()
 export class User {
@@ -19,6 +15,10 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({ default: 'user' })
-  role!: string;
+  // ✅ FIXED FOR SQLITE
+  @Column({
+    type: 'text',
+    default: Role.USER,
+  })
+  role!: Role;
 }

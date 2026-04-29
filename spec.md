@@ -15,11 +15,15 @@ The Campus Lost and Found System is a web-based application built with a NestJS 
 9. **Helpful Resources Page**: Access to campus safety info, tips, and services.
 10. **Contact/Help Page**: Support contact form and campus support details.
 11. **Claims Management**: View submitted claims via dashboard toggle.
+12. **Admin Dashboard**: Admin-only control center with report counts, priority review queue, location hotspots, return/handover queue, campus user review, and report approval/rejection actions.
+13. **Role-Based Routing**: Login redirects admins to the admin dashboard and normal users to the user dashboard based on the authenticated user role.
 
 ## Recent Updates
 - Fixed the account creation flow so `register.html` opens correctly and does not redirect immediately to the dashboard.
-- Updated login redirection so admin users are routed to `admin.html` when authenticated with the admin role.
+- Updated login redirection so admin users are routed to `admin-dashboard.html` and normal users are routed to `user-dashboard.html`.
 - Removed the “Recent Activity” and “Campus Tips” sections from the user dashboard layout.
+- Added a campus-focused admin dashboard with priority report review, location hotspots, return/handover queue, daily admin checklist, richer all-reports table, and campus user management tools.
+- Added demo admin handling for `admin@gmail.com` so it is treated as an admin account, while `user@gmail.com` remains a normal user account.
 
 ## Testing Types Explanation
 
@@ -104,6 +108,24 @@ E2E tests simulate real user scenarios from start to finish, testing the entire 
 - **Unit**: Test DashboardService for authentication checks.
 - **Integration**: Test GET /dashboard with/without auth.
 - **E2E**: User logs in, navigates via cards, toggles claims.
+
+### Admin Dashboard
+**Expected Behaviors**:
+- Admin dashboard must be protected and only accessible to users with the `admin` role.
+- Normal users attempting to open the admin dashboard must be redirected to the user dashboard or login page.
+- Summary cards must display total reports, pending review reports, approved posts, and campus user count.
+- Priority Review Queue must list pending reports first, with high-priority items highlighted.
+- Location Hotspots must summarize where lost/found reports are most common on campus.
+- Return / Handover Queue must show approved found items that are ready for claim verification or Security Office coordination.
+- All Reports table must show item title, type, user, status, location/submission time, and approve/reject actions.
+- Campus Users section must allow admins to search users, filter verification status, and view user activity/report counts.
+- Admin checklist must support daily operational tasks such as reviewing photos, matching reports, and confirming items with Security Office.
+
+**Test Cases**:
+- **Unit**: Test admin dashboard rendering helpers using sample lost/found report data.
+- **Integration**: Test admin-only dashboard route guard with admin and non-admin sessions.
+- **E2E**: Log in as `admin@gmail.com`, verify redirect to `admin-dashboard.html`, review queue contents, filter campus users, and approve/reject a report.
+- **E2E**: Log in as `user@gmail.com`, verify redirect to `user-dashboard.html`, and confirm admin dashboard access is blocked.
 
 ### User Profile
 **Expected Behaviors**:

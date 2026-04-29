@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Campus Lost & Found</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #fff8f5, #ffe2d8);
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: white;
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  border-right: 1px solid #eee;
+}
+
+.sidebar h2 {
+  color: #ff6f61;
+  font-weight: bold;
+}
+
+.nav-link {
+  display: block;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: #ff6f61;
+  color: white;
+}
+
+/* Main */
+.main-content {
+  margin-left: 280px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Cards */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  color: #ff6f61;
+}
+
+/* Table */
+.table-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.btn-approve {
+  background: green;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.btn-reject {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-header h4 {
+  margin: 0;
+}
+
+.users-tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.users-tools .form-control {
+  min-width: 180px;
+}
+
+.user-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.mini-stat {
+  background: #fff8f5;
+  border: 1px solid #ffd7ce;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.mini-stat strong {
+  display: block;
+  color: #ff6f61;
+  font-size: 1.4rem;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.badge-verified {
+  background: #e9f7ef;
+  color: #198754;
+}
+
+.badge-review {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.btn-small {
+  border: none;
+  padding: 5px 9px;
+  border-radius: 6px;
+  margin-right: 4px;
+}
+
+.btn-view {
+  background: #0d6efd;
+  color: white;
+}
+
+.btn-message {
+  background: #ff6f61;
+  color: white;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.admin-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.admin-panel h4 {
+  margin-bottom: 14px;
+}
+
+.queue-item,
+.handover-item,
+.checklist-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+}
+
+.queue-item:last-child,
+.handover-item:last-child,
+.checklist-item:last-child {
+  border-bottom: none;
+}
+
+.queue-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.queue-meta,
+.handover-meta {
+  color: #666;
+  font-size: 0.88rem;
+  margin-top: 4px;
+}
+
+.location-list {
+  display: grid;
+  gap: 10px;
+}
+
+.location-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+
+.location-bar {
+  height: 9px;
+  background: #ffe2d8;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.location-bar span {
+  display: block;
+  height: 100%;
+  background: #ff6f61;
+}
+
+.priority-high {
+  color: #dc3545;
+}
+
+.priority-normal {
+  color: #0d6efd;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-approved {
+  background: #e7f3ff;
+  color: #0d6efd;
+}
+
+.status-rejected {
+  background: #fdecef;
+  color: #b02a37;
+}
+
+.type-lost {
+  background: #fdecef;
+  color: #b02a37;
+}
+
+.type-found {
+  background: #e9f7ef;
+  color: #198754;
+}
+
+@media (max-width: 900px) {
+  .stats,
+  .user-summary-grid,
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .dashboard-container {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .stats,
+  .user-summary-grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <p id="adminName">Admin</p>
+
+    <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a>
+    <a href="#reports" class="nav-link" onclick="showSection('reports')">All Reports</a>
+    <a href="#users" class="nav-link" onclick="showSection('users')">Users</a>
+    <a href="index.html" class="nav-link">Home</a>
+
+    <button onclick="logout()" class="nav-link" style="border:none; background:none; text-align:left;">
+      Logout
+    </button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <h2>Admin Dashboard</h2>
+
+    <!-- STATS -->
+    <div id="dashboardSection">
+      <div class="stats">
+        <div class="card">
+          <h3 id="totalReports">0</h3>
+          <p>Total Reports</p>
+        </div>
+
+        <div class="card">
+          <h3 id="pendingReports">0</h3>
+          <p>Pending Review</p>
+        </div>
+
+        <div class="card">
+          <h3 id="approvedReports">0</h3>
+          <p>Approved Posts</p>
+        </div>
+
+        <div class="card">
+          <h3 id="usersCount">0</h3>
+          <p>Campus Users</p>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="admin-panel">
+          <div class="section-header">
+            <h4>Priority Review Queue</h4>
+            <small class="text-muted">Items that need admin action first</small>
+          </div>
+          <div id="priorityQueue"></div>
+        </div>
+
+        <div class="admin-panel">
+          <h4>Location Hotspots</h4>
+          <div class="location-list" id="locationHotspots"></div>
+        </div>
+
+        <div class="admin-panel">
+          <h4>Return / Handover Queue</h4>
+          <div id="handoverQueue"></div>
+        </div>
+
+        <div class="admin-panel">
+          <h4>Admin Daily Checklist</h4>
+          <div class="checklist-item">
+            <input type="checkbox" id="checkSecurity">
+            <label for="checkSecurity">Confirm found items received by Security Office</label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" id="checkPhotos">
+            <label for="checkPhotos">Review item photos and remove sensitive details</label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" id="checkClaims">
+            <label for="checkClaims">Match pending lost reports with new found reports</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS TABLE -->
+    <div class="table-container" id="reportsSection">
+      <div class="section-header">
+        <h4>All Reports</h4>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="reportsTable"></tbody>
+      </table>
+    </div>
+
+    <!-- USERS -->
+    <div class="table-container" id="usersSection" style="display:none;">
+      <div class="section-header">
+        <div>
+          <h4>Campus Users</h4>
+          <small class="text-muted">Review students and staff who submit lost and found reports.</small>
+        </div>
+        <div class="users-tools">
+          <input type="text" id="userSearch" class="form-control" placeholder="Search name or email">
+          <select id="userStatusFilter" class="form-control">
+            <option value="">All users</option>
+            <option value="verified">Verified</option>
+            <option value="review">Needs review</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="user-summary-grid">
+        <div class="mini-stat">
+          <strong id="verifiedUsers">0</strong>
+          Verified campus accounts
+        </div>
+        <div class="mini-stat">
+          <strong id="reviewUsers">0</strong>
+          Need admin review
+        </div>
+        <div class="mini-stat">
+          <strong id="activeReporters">0</strong>
+          Users with item reports
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Reports</th>
+            <th>Last Activity</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// check session
+const session = JSON.parse(localStorage.getItem("session"));
+const user = session?.user;
+
+if (!user || String(user.role || "").toLowerCase() !== "admin") {
+  window.location.href = "login.html";
+}
+
+const reports = [
+  {
+    title: "Lost Phone",
+    type: "lost",
+    user: "John Santos",
+    status: "pending",
+    location: "Library",
+    priority: "high",
+    note: "Contains student ID and banking apps",
+    submitted: "Today, 8:20 AM"
+  },
+  {
+    title: "Found Wallet",
+    type: "found",
+    user: "Anna Reyes",
+    status: "approved",
+    location: "Cafeteria",
+    priority: "normal",
+    note: "Waiting for owner verification",
+    submitted: "Today, 9:05 AM"
+  },
+  {
+    title: "Lost ID Lace",
+    type: "lost",
+    user: "Liza Aquino",
+    status: "pending",
+    location: "Student Center",
+    priority: "high",
+    note: "Needed for exam entry this afternoon",
+    submitted: "Today, 10:15 AM"
+  },
+  {
+    title: "Found Blue Tumbler",
+    type: "found",
+    user: "Campus Guard Desk",
+    status: "approved",
+    location: "Gym",
+    priority: "normal",
+    note: "Stored at Security Office shelf B",
+    submitted: "Yesterday, 4:40 PM"
+  },
+  {
+    title: "Lost Calculator",
+    type: "lost",
+    user: "Mark Dela Cruz",
+    status: "pending",
+    location: "Classroom",
+    priority: "normal",
+    note: "Possible match with found item near Room 203",
+    submitted: "Yesterday, 2:10 PM"
+  }
+];
+
+// sample load (replace with API later)
+function loadDashboard() {
+  document.getElementById("adminName").innerText = user.name || user.email || "Admin";
+
+  document.getElementById("totalReports").innerText = reports.length;
+  document.getElementById("pendingReports").innerText =
+    reports.filter(report => report.status === "pending").length;
+  document.getElementById("approvedReports").innerText =
+    reports.filter(report => report.status === "approved").length;
+  document.getElementById("usersCount").innerText = campusUsers.length;
+
+  renderReports();
+  renderPriorityQueue();
+  renderLocationHotspots();
+  renderHandoverQueue();
+  loadUsers();
+}
+
+function renderReports() {
+  document.getElementById("reportsTable").innerHTML =
+    reports.map(report => `
+      <tr>
+        <td>
+          <strong>${report.title}</strong>
+          <br><small class="text-muted">${report.location} &bull; ${report.submitted}</small>
+        </td>
+        <td><span class="status-pill type-${report.type}">${report.type}</span></td>
+        <td>${report.user}</td>
+        <td><span class="status-pill status-${report.status}">${report.status}</span></td>
+        <td>
+          <button class="btn-approve" onclick="updateReportStatus('${report.title}', 'approved')">Approve</button>
+          <button class="btn-reject" onclick="updateReportStatus('${report.title}', 'rejected')">Reject</button>
+        </td>
+      </tr>
+    `).join("");
+}
+
+function renderPriorityQueue() {
+  const pendingReports = reports
+    .filter(report => report.status === "pending")
+    .sort((a, b) => Number(b.priority === "high") - Number(a.priority === "high"));
+
+  document.getElementById("priorityQueue").innerHTML = pendingReports.map(report => `
+    <div class="queue-item">
+      <div class="queue-title">
+        <span>${report.title}</span>
+        <span class="priority-${report.priority}">${report.priority === "high" ? "High" : "Normal"}</span>
+      </div>
+      <div class="queue-meta">${report.type} report by ${report.user} at ${report.location}</div>
+      <div class="queue-meta">${report.note}</div>
+    </div>
+  `).join("") || `<p class="text-muted">No pending reports right now.</p>`;
+}
+
+function renderLocationHotspots() {
+  const counts = reports.reduce((summary, report) => {
+    summary[report.location] = (summary[report.location] || 0) + 1;
+    return summary;
+  }, {});
+  const maxCount = Math.max(...Object.values(counts));
+
+  document.getElementById("locationHotspots").innerHTML =
+    Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([location, count]) => `
+        <div class="location-row">
+          <span>${location}</span>
+          <div class="location-bar"><span style="width:${(count / maxCount) * 100}%"></span></div>
+          <strong>${count}</strong>
+        </div>
+      `).join("");
+}
+
+function renderHandoverQueue() {
+  const handoverReports = reports.filter(report => report.status === "approved" && report.type === "found");
+
+  document.getElementById("handoverQueue").innerHTML = handoverReports.map(report => `
+    <div class="handover-item">
+      <strong>${report.title}</strong>
+      <div class="handover-meta">${report.location} &bull; ${report.note}</div>
+      <button class="btn-small btn-view" onclick="alert('Prepare claim verification for ${report.title}.')">Verify Claim</button>
+      <button class="btn-small btn-message" onclick="alert('Security Office has been notified about ${report.title}.')">Notify Security</button>
+    </div>
+  `).join("") || `<p class="text-muted">No items are ready for handover.</p>`;
+}
+
+function updateReportStatus(title, status) {
+  const report = reports.find(item => item.title === title);
+  if (!report) return;
+
+  report.status = status;
+  renderReports();
+  renderPriorityQueue();
+  renderHandoverQueue();
+  document.getElementById("pendingReports").innerText =
+    reports.filter(item => item.status === "pending").length;
+  document.getElementById("approvedReports").innerText =
+    reports.filter(item => item.status === "approved").length;
+}
+
+const campusUsers = [
+  {
+    name: "John Santos",
+    email: "john.santos@campus.edu",
+    role: "student",
+    reports: 3,
+    lastActivity: "Reported lost phone near Library",
+    status: "review"
+  },
+  {
+    name: "Anna Reyes",
+    email: "anna.reyes@campus.edu",
+    role: "student",
+    reports: 2,
+    lastActivity: "Submitted found wallet at Cafeteria",
+    status: "verified"
+  },
+  {
+    name: "Mark Dela Cruz",
+    email: "mark.delacruz@campus.edu",
+    role: "staff",
+    reports: 5,
+    lastActivity: "Approved handover at Security Office",
+    status: "verified"
+  },
+  {
+    name: "Liza Aquino",
+    email: "liza.aquino@campus.edu",
+    role: "student",
+    reports: 0,
+    lastActivity: "Account created",
+    status: "review"
+  },
+  {
+    name: "Campus Guard Desk",
+    email: "security@campus.edu",
+    role: "staff",
+    reports: 8,
+    lastActivity: "Logged found ID cards",
+    status: "verified"
+  }
+];
+
+function loadUsers() {
+  const searchTerm = (document.getElementById("userSearch")?.value || "").toLowerCase();
+  const statusFilter = document.getElementById("userStatusFilter")?.value || "";
+  const filteredUsers = campusUsers.filter(campusUser => {
+    const searchableText = `${campusUser.name} ${campusUser.email} ${campusUser.role}`.toLowerCase();
+    const matchesSearch = searchableText.includes(searchTerm);
+    const matchesStatus = !statusFilter || campusUser.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  document.getElementById("verifiedUsers").innerText =
+    campusUsers.filter(campusUser => campusUser.status === "verified").length;
+  document.getElementById("reviewUsers").innerText =
+    campusUsers.filter(campusUser => campusUser.status === "review").length;
+  document.getElementById("activeReporters").innerText =
+    campusUsers.filter(campusUser => campusUser.reports > 0).length;
+
+  document.getElementById("usersTable").innerHTML =
+    filteredUsers.map(campusUser => {
+      const statusLabel = campusUser.status === "verified" ? "Verified" : "Needs review";
+      const statusClass = campusUser.status === "verified" ? "badge-verified" : "badge-review";
+
+      return `
+        <tr>
+          <td>${campusUser.name}</td>
+          <td>${campusUser.email}</td>
+          <td>${campusUser.role}</td>
+          <td>${campusUser.reports}</td>
+          <td>${campusUser.lastActivity}</td>
+          <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+          <td>
+            <button class="btn-small btn-view" onclick="viewUserReports('${campusUser.name}')">Reports</button>
+            <button class="btn-small btn-message" onclick="messageUser('${campusUser.email}')">Message</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+}
+
+function showSection(section) {
+  document.getElementById("dashboardSection").style.display = section === "dashboard" ? "block" : "none";
+  document.getElementById("reportsSection").style.display = section === "reports" ? "block" : "none";
+  document.getElementById("usersSection").style.display = section === "users" ? "block" : "none";
+
+  document.querySelectorAll(".nav-link").forEach(link => {
+    const isActive = link.getAttribute("href") === `#${section}`;
+    link.classList.toggle("active", isActive);
+  });
+}
+
+function viewUserReports(name) {
+  alert(`${name}'s item report history will open here when connected to the API.`);
+}
+
+function messageUser(email) {
+  alert(`Admin notice prepared for ${email}. Connect this to email or campus messaging later.`);
+}
+
+function logout() {
+  localStorage.removeItem("session");
+  window.location.href = "login.html";
+}
+
+loadDashboard();
+
+document.getElementById("userSearch").addEventListener("input", loadUsers);
+document.getElementById("userStatusFilter").addEventListener("change", loadUsers);
+
+if (window.location.hash === "#users") {
+  showSection("users");
+} else if (window.location.hash === "#reports") {
+  showSection("reports");
+} else {
+  showSection("dashboard");
+}
+</script>
+
+</body>
+</html>
